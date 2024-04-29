@@ -1,30 +1,7 @@
-require('dotenv').config()
-const ip = require("ip");
+const kafka = require('./kafka');
+const { CompressionTypes } = require('kafkajs')
 
-const {Kafka, CompressionTypes, logLevel} = require("kafkajs");
-
-const hosts = {
-    one: process.env.HOST_ONE || ip.address(),
-    two: process.env.HOST_TWO || ip.address(),
-}
-
-const port = process.env.HOST_PORT || 9198;
-
-const kafkaopts = {
-	logLevel: logLevel.INFO,
-	clientId: "advanceph-app",
-    brokers: [`${hosts.one}:${port}`, `${hosts.two}:${port}`],
-	ssl: true,
-	sasl: {
-        mechanism: "SCRAM-SHA-512",
-        username: process.env.CLUSTER_USERNAME,
-        password: process.env.CLUSTER_PASSWORD
-	},
-};
-
-const kafka = new Kafka(kafkaopts);
-
-const topic = "dev-kafka-topic";
+const topic = process.env.KAFKA_TOPIC;
 const producer = kafka.producer();
 
 const getRandomNumber = () => Math.round(Math.random(10) * 1000);
@@ -49,7 +26,7 @@ const sendMessage = () => {
 const run = async () => {
 	await producer.connect();
     sendMessage();
-	setInterval(sendMessage, 10000);
+	setInterval(sendMessage, 60000);
 };
 
 run().catch((e) => console.error(`[example/producer] ${e.message}`, e));
