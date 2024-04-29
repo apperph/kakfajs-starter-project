@@ -1,15 +1,16 @@
 const kafka = require('./kafka');
 const admin = kafka.admin();
 
-
 const run = async () => {
     // connect to kafka cluster
     await admin.connect();
 
+    await admin.describeCluster().then(res => console.log(res));
+
     // Create topics
     await admin.createTopics({
         topics: [{
-            topic: 'kafkajs.test-topic',
+            topic: process.env.KAFKA_TOPIC,
             numPartitions: 1,
             replicationFactor: 2
         }]

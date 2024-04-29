@@ -14,7 +14,6 @@ const kafkaOptions = {
         password: process.env.CLUSTER_PASSWORD
     },
 };
-
 // Other Kafka Options:
 // authenticationTimeout: 10000,
 // reauthenticationThreshold: 10000,
